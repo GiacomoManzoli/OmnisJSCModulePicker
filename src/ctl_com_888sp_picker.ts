@@ -4,7 +4,7 @@ import { Module, ModulePicker } from "./ModulePicker"
 /****** CONSTANTS ******/
 var PROPERTIES = {
     // <OmnisUpdateMarker_PropertyConstants_Begin>
-    filter: "::$filter",
+    filter: "$::filter",
     titlefontsize: "$titlefontsize",
     fontsize: "$::fontsize",
     boxwidth: "$boxwidth",

@@ -672,6 +672,7 @@ var ModulePicker = /** @class */ (function () {
     };
     ModulePicker.prototype.render = function () {
         this.container.style.backgroundColor = this.backgroundColor;
+        this.container.style.whiteSpace = "initial";
         var groupedData = this.applyFilter();
         var groupNames = Array.from(groupedData.keys());
         for (var j = groupNames.length - 1; j >= 0; j--) {
@@ -773,7 +774,7 @@ var ModulePicker_1 = __webpack_require__(/*! ./ModulePicker */ "./src/ModulePick
 /****** CONSTANTS ******/
 var PROPERTIES = {
     // <OmnisUpdateMarker_PropertyConstants_Begin>
-    filter: "::$filter",
+    filter: "$::filter",
     titlefontsize: "$titlefontsize",
     fontsize: "$::fontsize",
     boxwidth: "$boxwidth",

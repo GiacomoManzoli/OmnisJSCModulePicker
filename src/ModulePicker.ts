@@ -225,6 +225,7 @@ export class ModulePicker {
 
     render() {
         this.container.style.backgroundColor = this.backgroundColor
+        this.container.style.whiteSpace = "initial"
         let groupedData = this.applyFilter()
         let groupNames = Array.from(groupedData.keys())
 
