@@ -498,13 +498,6 @@ module.exports = function (list, options) {
 
 "use strict";
 
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ModulePicker = exports.Module = void 0;
 __webpack_require__(/*! ./style.css */ "./src/style.css");
@@ -526,8 +519,8 @@ var ModuleGroup = /** @class */ (function () {
 var ModulePicker = /** @class */ (function () {
     function ModulePicker(container) {
         this.filter = "";
-        this.modules = [];
         this.rendered = new Map();
+        this.defaultCollapsed = false;
         this.container = container;
         this.container.innerHTML = "";
         this.handlers = new Map();
@@ -537,7 +530,6 @@ var ModulePicker = /** @class */ (function () {
     };
     ModulePicker.prototype.setModules = function (modules) {
         var _this = this;
-        this.modules = __spreadArrays(modules);
         this.rendered = new Map();
         modules.forEach(function (v) {
             var group = v.group;
@@ -552,7 +544,7 @@ var ModulePicker = /** @class */ (function () {
             else {
                 var moduleGroup = new ModuleGroup();
                 moduleGroup.group = v.group;
-                moduleGroup.expanded = true;
+                moduleGroup.expanded = !_this.defaultCollapsed;
                 moduleGroup.visible = true;
                 moduleGroup.element = null;
                 moduleGroup.modules = [
@@ -589,14 +581,26 @@ var ModulePicker = /** @class */ (function () {
         return currData;
     };
     ModulePicker.prototype.createGroupElement = function (g) {
+        var _this = this;
         var groupContainer = document.createElement("div");
         var title = document.createElement("p");
-        title.innerText = "";
         title.style.fontWeight = "bold";
         title.style.cursor = "pointer";
+        title.style.fontSize = this.titleFontSize + "pt";
+        var expandCollapse = document.createElement("span");
+        expandCollapse.innerText = "+";
+        expandCollapse.style.display = "inline-block";
+        expandCollapse.style.width = this.titleFontSize + 1 + "pt";
+        expandCollapse.style.height = this.titleFontSize + 1 + "pt";
+        expandCollapse.style.textAlign = "center";
+        title.appendChild(expandCollapse);
+        var titleText = document.createElement("span");
+        titleText.innerText = "";
+        title.appendChild(titleText);
         groupContainer.appendChild(title);
         title.onclick = function (e) {
             g.expanded = !g.expanded;
+            _this.updateGroupElement(g);
             var ul = g.element.querySelector("ul");
             if (ul) {
                 ul.style.display = g.expanded ? "flex" : "none";
@@ -619,8 +623,12 @@ var ModulePicker = /** @class */ (function () {
     };
     ModulePicker.prototype.updateGroupElement = function (g) {
         g.element.style.display = g.visible ? "block" : "none";
-        var text = g.element.querySelector("p");
-        text.innerText = g.group;
+        var title = g.element.querySelector("p");
+        var titleContent = Array.from(title.querySelectorAll("span"));
+        var expandCollapse = titleContent[0], titleText = titleContent[1];
+        expandCollapse.innerText = g.expanded ? "-" : "+";
+        titleText.innerText = g.group;
+        // text.innerText = g.group
     };
     ModulePicker.prototype.createModuleElement = function (m) {
         var _this = this;
@@ -631,8 +639,11 @@ var ModulePicker = /** @class */ (function () {
         item.style.overflow = "hidden";
         item.style.alignItems = "center";
         item.style.justifyContent = "center";
-        item.style.width = "100px";
-        item.style.height = "100px";
+        item.style.width = this.boxWidth + "px";
+        item.style.height = this.boxHeight + "px";
+        item.style.color = this.boxTextColor;
+        item.style.backgroundColor = this.boxColor;
+        item.style.fontSize = this.fontSize + "pt";
         item.style.minWidth = item.style.width;
         item.style.minHeight = item.style.height;
         item.style.margin = "16px";
@@ -643,6 +654,7 @@ var ModulePicker = /** @class */ (function () {
         text.style.overflow = "hidden";
         text.style.textOverflow = "ellipsis";
         text.style.textAlign = "center";
+        text.style.padding = "8px";
         item.appendChild(text);
         item.onclick = function (e) {
             _this.onModuleClick(e, m.module.id, m.module);
@@ -659,9 +671,9 @@ var ModulePicker = /** @class */ (function () {
         }
     };
     ModulePicker.prototype.render = function () {
+        this.container.style.backgroundColor = this.backgroundColor;
         var groupedData = this.applyFilter();
         var groupNames = Array.from(groupedData.keys());
-        console.log(groupNames);
         for (var j = groupNames.length - 1; j >= 0; j--) {
             var g = groupedData.get(groupNames[j]);
             if (!g.element) {
@@ -761,7 +773,15 @@ var ModulePicker_1 = __webpack_require__(/*! ./ModulePicker */ "./src/ModulePick
 /****** CONSTANTS ******/
 var PROPERTIES = {
     // <OmnisUpdateMarker_PropertyConstants_Begin>
-    filter: "$::filter",
+    filter: "::$filter",
+    titlefontsize: "$titlefontsize",
+    fontsize: "$::fontsize",
+    boxwidth: "$boxwidth",
+    boxheight: "$boxheight",
+    boxcolor: "$boxcolor",
+    boxtextcolor: "$boxtextcolor",
+    backgroundcolor: "$::backgroundcolor",
+    defaultcollapsed: "$defaultcollapsed",
 };
 var EVENTS = {
     evNetOmnisControlOpened: 1,
@@ -850,65 +870,36 @@ var ctrl_com_888sp_modulepicker = /** @class */ (function (_super) {
         if (propNumber) {
             switch (propNumber) {
                 case PROPERTIES.filter:
-                    console.log("set filter");
                     this.picker.setFilter(propValue.toString());
                     this.picker.render();
                     return true;
-                //         // Main control
-                //         case PROPERTIES.backgroundcolor:
-                //             this.picker.backgroundColor = propValue as string
-                //             return true
-                //         // Active TAB
-                //         case PROPERTIES.activetabbackgroundcolor:
-                //             this.picker.activeTabBackgroundColor = propValue as string
-                //             return true
-                //         case PROPERTIES.activetabtextcolor:
-                //             this.picker.activeTabTextColor = propValue as string
-                //             return true
-                //         // TAB
-                //         case PROPERTIES.tabbackgroundcolor:
-                //             this.picker.tabBackgroundColor = propValue as string
-                //             return true
-                //         case PROPERTIES.tabtextcolor:
-                //             this.picker.textColor = propValue as string
-                //             return true
-                //         case PROPERTIES.tabbordercolor:
-                //             this.picker.tabBorderColor = propValue as string
-                //             return true
-                //         case PROPERTIES.tabbordersize:
-                //             this.picker.tabBorderSize = propValue as number
-                //             return true
-                //         case PROPERTIES.tabborderradius:
-                //             this.picker.tabBorderRadius = propValue as number
-                //             return true
-                //         case PROPERTIES.tabspacing:
-                //             this.picker.tabSpacing = propValue as number
-                //             return true
-                //         case PROPERTIES.tabwidth:
-                //             this.picker.tabWidth = propValue as number
-                //             return true
-                //         case PROPERTIES.tabmaxwidth:
-                //             this.picker.tabMaxWidth = propValue as number
-                //             return true
-                //         case PROPERTIES.tabminwidth:
-                //             this.picker.tabMinWidth = propValue as number
-                //             return true
-                //         case PROPERTIES.tabpaddinghorz:
-                //             this.picker.tabPaddingHorz = propValue as number
-                //             return true
-                //         case PROPERTIES.tabpaddingvert:
-                //             this.picker.tabPaddingVert = propValue as number
-                //             return true
-                //         // BEHAVIOR
-                //         case PROPERTIES.canaddtab:
-                //             this.picker.canAddTab = propValue as boolean
-                //             return true
-                //         case PROPERTIES.canclosetab:
-                //             this.picker.canCloseTab = propValue as boolean
-                //             return true
-                //         case PROPERTIES.autoupdate:
-                //             this.autoUpdate = propValue as boolean
-                //             return true
+                case PROPERTIES.defaultcollapsed:
+                    this.picker.defaultCollapsed = propValue;
+                    return true;
+                // Main control
+                case PROPERTIES.backgroundcolor:
+                    this.picker.backgroundColor = propValue;
+                    return true;
+                case PROPERTIES.fontsize:
+                    this.picker.fontSize = propValue;
+                    return true;
+                case PROPERTIES.titlefontsize:
+                    this.picker.titleFontSize = propValue;
+                    return true;
+                // BOX
+                case PROPERTIES.boxcolor:
+                    // With uselegacycolor -> it's a rgb HEX string, else it's an OmnisNumericColor (int value)
+                    this.picker.boxColor = propValue;
+                    return true;
+                case PROPERTIES.boxheight:
+                    this.picker.boxHeight = propValue;
+                    return true;
+                case PROPERTIES.boxwidth:
+                    this.picker.boxWidth = propValue;
+                    return true;
+                case PROPERTIES.boxtextcolor:
+                    this.picker.boxTextColor = propValue;
+                    return true;
             }
         }
         return _super.prototype.setProperty.call(this, propNumber, propValue);
@@ -917,46 +908,23 @@ var ctrl_com_888sp_modulepicker = /** @class */ (function (_super) {
         switch (propNumber) {
             case PROPERTIES.filter:
                 return this.picker.filter;
+            // Main control
+            case PROPERTIES.backgroundcolor:
+                return this.picker.backgroundColor;
+            case PROPERTIES.fontsize:
+                return this.picker.fontSize;
+            case PROPERTIES.titlefontsize:
+                return this.picker.titleFontSize;
+            // BOX
+            case PROPERTIES.boxcolor:
+                return this.picker.boxColor;
+            case PROPERTIES.boxheight:
+                return this.picker.boxHeight;
+            case PROPERTIES.boxwidth:
+                return this.picker.boxWidth;
+            case PROPERTIES.boxtextcolor:
+                return this.picker.boxTextColor;
         }
-        //     // Main control
-        //     case PROPERTIES.backgroundcolor:
-        //         return this.picker.backgroundColor
-        //     // Active TAB
-        //     case PROPERTIES.activetabbackgroundcolor:
-        //         return this.picker.activeTabBackgroundColor
-        //     case PROPERTIES.activetabtextcolor:
-        //         return this.picker.activeTabTextColor
-        //     // TAB
-        //     case PROPERTIES.tabbackgroundcolor:
-        //         return this.picker.tabBackgroundColor
-        //     case PROPERTIES.tabtextcolor:
-        //         return this.picker.textColor
-        //     case PROPERTIES.tabbordercolor:
-        //         return this.picker.tabBorderColor
-        //     case PROPERTIES.tabbordersize:
-        //         return this.picker.tabBorderSize
-        //     case PROPERTIES.tabborderradius:
-        //         return this.picker.tabBorderRadius
-        //     case PROPERTIES.tabspacing:
-        //         return this.picker.tabSpacing
-        //     case PROPERTIES.tabwidth:
-        //         return this.picker.tabWidth
-        //     case PROPERTIES.tabmaxwidth:
-        //         return this.picker.tabMaxWidth
-        //     case PROPERTIES.tabminwidth:
-        //         return this.picker.tabMinWidth
-        //     case PROPERTIES.tabpaddinghorz:
-        //         return this.picker.tabPaddingHorz
-        //     case PROPERTIES.tabpaddingvert:
-        //         return this.picker.tabPaddingVert
-        //     // BEHAVIOR
-        //     case PROPERTIES.canaddtab:
-        //         return this.picker.canAddTab
-        //     case PROPERTIES.canclosetab:
-        //         return this.picker.canCloseTab
-        //     case PROPERTIES.autoupdate:
-        //         return this.autoUpdate
-        // }
         return _super.prototype.getProperty.call(this, propNumber);
     };
     ctrl_com_888sp_modulepicker.prototype.initModulePicker = function (client_elem) {

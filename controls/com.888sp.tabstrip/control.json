@@ -1,5 +1,5 @@
 {
-    "name": "com.888sp.tabstrip",
+    "name": "com.888sp.modulepicker",
     "flags": {
         "beforeafterevents": false,
         "beforeevents": false,
@@ -11,55 +11,77 @@
         "hasdragevents": false,
         "uselegacycolors": true
     },
-    "customtabname":  "TabStrip",
-    "standardproperties" :  [
-        "dataname",
-        "font",
-        "fontsize"
-    ],
+    "customtabname": "Picker",
+    "standardproperties": ["dataname", "font"],
     "properties": {
-        "autoupdate": {
+        "filter": {
+            "id": 1,
+            "desc": "",
+            "type": "character",
+            "tab": "custom",
+            "runtimeonly": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": "''",
+            "editreadonly": false
+        },
+        "titlefontsize": {
             "id": 2,
-            "desc": "Auto update active tab",
-            "type": "boolean",
+            "desc": "Title font size (pt)",
+            "type": "integer",
             "tab": "custom",
             "runtimeonly": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
             "constrangeend": "",
-            "initial": 0,
+            "initial": 11,
             "editreadonly": false
         },
-        "canclosetab": {
+        "fontsize": {
             "id": 3,
-            "desc": "Enable the close icon for the active tab",
-            "type": "boolean",
+            "desc": "Font size for the tiles (pt)",
+            "type": "integer",
             "tab": "custom",
             "runtimeonly": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
             "constrangeend": "",
-            "initial": 1,
+            "initial": 11,
             "editreadonly": false
         },
-        "canaddtab": {
+        "boxwidth": {
             "id": 4,
-            "desc": "Show \"Add tab\" icon",
-            "type": "boolean",
+            "desc": "Box width (px)",
+            "type": "integer",
             "tab": "custom",
             "runtimeonly": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
             "constrangeend": "",
-            "initial": 0,
+            "initial": 100,
             "editreadonly": false
         },
-        "backgroundcolor": {
-            "id": 7,
-            "desc": "Tabstrip background color",
+        "boxheight": {
+            "id": 5,
+            "desc": "Box height (px)",
+            "type": "integer",
+            "tab": "custom",
+            "runtimeonly": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": 100,
+            "editreadonly": false
+        },
+        "boxcolor": {
+            "id": 6,
+            "desc": "Box background color",
             "type": "color",
             "tab": "custom",
             "runtimeonly": false,
@@ -70,104 +92,37 @@
             "initial": -2147483448,
             "editreadonly": false
         },
-        "activetabbackgroundcolor": {
+        "boxtextcolor": {
+            "id": 7,
+            "desc": "Box text color",
+            "type": "color",
+            "tab": "custom",
+            "runtimeonly": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": -2147483447,
+            "editreadonly": false
+        },
+        "backgroundcolor": {
             "id": 8,
-            "desc": "Active tab background color",
+            "desc": "Background color",
             "type": "color",
             "tab": "custom",
             "runtimeonly": false,
+            "findandreplace": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
             "constrangeend": "",
-            "initial": -2147483462,
+            "initial": -2147483448,
             "editreadonly": false
         },
-        "tabbackgroundcolor": {
+        "defaultcollapsed": {
             "id": 9,
-            "desc": "Tab background color",
-            "type": "color",
-            "tab": "custom",
-            "runtimeonly": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": -2147483461,
-            "editreadonly": false
-        },
-        "tabbordercolor": {
-            "id": 10,
-            "desc": "Tab border color",
-            "type": "color",
-            "tab": "custom",
-            "runtimeonly": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": -2147483442,
-            "editreadonly": false
-        },
-        "tabtextcolor": {
-            "id": 11,
-            "desc": "Tab text color",
-            "type": "color",
-            "tab": "custom",
-            "runtimeonly": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": -2147483458,
-            "editreadonly": false
-        },
-        "activetabtextcolor": {
-            "id": 12,
-            "desc": "Active tab text color",
-            "type": "color",
-            "tab": "custom",
-            "runtimeonly": false,
-            "findandreplace": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": -2147483459,
-            "editreadonly": false
-        },
-        "tabborderradius": {
-            "id": 13,
-            "desc": "Tab border radius",
-            "type": "integer",
-            "tab": "custom",
-            "runtimeonly": false,
-            "findandreplace": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": 8,
-            "editreadonly": false
-        },
-        "tabspacing": {
-            "id": 14,
-            "desc": "Spacing between tabs",
-            "type": "integer",
-            "tab": "custom",
-            "runtimeonly": false,
-            "findandreplace": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": 8,
-            "editreadonly": false
-        },
-        "tabbordersize": {
-            "id": 15,
-            "desc": "Tab border size, 0 for no border",
-            "type": "integer",
+            "desc": "All groups are collapsed by default",
+            "type": "boolean",
             "tab": "custom",
             "runtimeonly": false,
             "findandreplace": false,
@@ -176,120 +131,46 @@
             "constrangestart": "",
             "constrangeend": "",
             "initial": 0,
-            "editreadonly": false
-        },
-        "tabminwidth": {
-            "id": 16,
-            "desc": "Minimum tab width (only if tabwidth=0)",
-            "type": "integer",
-            "tab": "custom",
-            "runtimeonly": false,
-            "findandreplace": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": 0,
-            "editreadonly": false
-        },
-        "tabmaxwidth": {
-            "id": 17,
-            "desc": "Maximum tab width (only if tabwidth=0)",
-            "type": "integer",
-            "tab": "custom",
-            "runtimeonly": false,
-            "findandreplace": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": 200,
-            "editreadonly": false
-        },
-        "tabwidth": {
-            "id": 18,
-            "desc": "Fixed tab width",
-            "type": "integer",
-            "tab": "custom",
-            "runtimeonly": false,
-            "findandreplace": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": 160,
-            "editreadonly": false
-        },
-        "tabpaddinghorz": {
-            "id": 19,
-            "desc": "Tab horizontal padding",
-            "type": "integer",
-            "tab": "custom",
-            "runtimeonly": false,
-            "findandreplace": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": 16,
-            "editreadonly": false
-        },
-        "tabpaddingvert": {
-            "id": 20,
-            "desc": "Tab vertical padding",
-            "type": "integer",
-            "tab": "custom",
-            "runtimeonly": false,
-            "findandreplace": false,
-            "extconstant": false,
-            "intconstant": false,
-            "constrangestart": "",
-            "constrangeend": "",
-            "initial": 8,
             "editreadonly": false
         }
     },
-    "constants": {
-    },
+    "constants": {},
     "events": {
-        "evTabClose": {
+        "evNetOmnisControlOpened": {
             "id": 1,
-            "desc": "",
+            "desc": "The event sent when the control opens",
             "parameters": [
                 {
-                    "name": "TabNum",
+                    "name": "Name",
                     "type": "character",
-                    "desc": "Tab chiuso"
+                    "desc": "The name event parameter"
                 }
             ]
         },
-        "evTabAdd": {
+        "evModuleClick": {
             "id": 2,
             "desc": "",
             "parameters": [
                 {
-                    "name": "TabNum",
+                    "name": "ModuleId",
                     "type": "integer",
                     "desc": ""
-                }
-            ]
-        },
-        "evTabClick": {
-            "id": 3,
-            "desc": "",
-            "parameters": [
+                },
                 {
-                    "name": "TabNum",
-                    "type": "integer",
+                    "name": "ModuleName",
+                    "type": "character",
+                    "desc": ""
+                },
+                {
+                    "name": "ModuleGroup",
+                    "type": "character",
                     "desc": ""
                 }
             ]
         }
     },
-    "methods": {
-    },
+    "methods": {},
     "html": {
-        "template": "<div %o %s data-props='%p' data-mvprops='%m'></div>",
-        "extrastyles": "display:flex;"
+        "template": "<div %o %s data-props='%p' data-mvprops='%m'></div>"
     }
 }

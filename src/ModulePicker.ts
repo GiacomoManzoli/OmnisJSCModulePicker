@@ -34,8 +34,16 @@ export class ModulePicker {
     handlers: Map<ModulePickerEvent, ModulePickerEventHandler>
 
     private container: HTMLElement
-    private modules: Module[] = []
     private rendered: Map<string, ModuleGroup> = new Map()
+
+    public backgroundColor: string
+    public fontSize: number
+    public titleFontSize: number
+    public boxColor: string
+    public boxWidth: number
+    public boxHeight: number
+    public boxTextColor: string
+    public defaultCollapsed: boolean = false
 
     constructor(container: HTMLElement) {
         this.container = container
@@ -47,7 +55,6 @@ export class ModulePicker {
     }
 
     setModules(modules: Module[]) {
-        this.modules = [...modules]
         this.rendered = new Map()
         modules.forEach((v) => {
             let { group } = v
@@ -61,7 +68,7 @@ export class ModulePicker {
             } else {
                 let moduleGroup = new ModuleGroup()
                 moduleGroup.group = v.group
-                moduleGroup.expanded = true
+                moduleGroup.expanded = !this.defaultCollapsed
                 moduleGroup.visible = true
                 moduleGroup.element = null
                 moduleGroup.modules = [
@@ -107,15 +114,29 @@ export class ModulePicker {
         let groupContainer = document.createElement("div")
 
         let title = document.createElement("p")
-        title.innerText = ""
         title.style.fontWeight = "bold"
 
         title.style.cursor = "pointer"
+        title.style.fontSize = `${this.titleFontSize}pt`
+
+        let expandCollapse = document.createElement("span")
+        expandCollapse.innerText = "+"
+        expandCollapse.style.display = "inline-block"
+        expandCollapse.style.width = `${this.titleFontSize + 1}pt`
+        expandCollapse.style.height = `${this.titleFontSize + 1}pt`
+        expandCollapse.style.textAlign = "center"
+
+        title.appendChild(expandCollapse)
+
+        let titleText = document.createElement("span")
+        titleText.innerText = ""
+        title.appendChild(titleText)
 
         groupContainer.appendChild(title)
 
         title.onclick = (e: MouseEvent) => {
             g.expanded = !g.expanded
+            this.updateGroupElement(g)
             let ul = g.element.querySelector("ul")
             if (ul) {
                 ul.style.display = g.expanded ? "flex" : "none"
@@ -143,8 +164,15 @@ export class ModulePicker {
 
     private updateGroupElement(g: ModuleGroup) {
         g.element.style.display = g.visible ? "block" : "none"
-        let text = g.element.querySelector("p")
-        text.innerText = g.group
+        let title = g.element.querySelector("p")
+
+        let titleContent = Array.from(title.querySelectorAll("span"))
+        let [expandCollapse, titleText] = titleContent
+
+        expandCollapse.innerText = g.expanded ? "-" : "+"
+        titleText.innerText = g.group
+
+        // text.innerText = g.group
     }
 
     private createModuleElement(m: ModuleData) {
@@ -155,8 +183,11 @@ export class ModulePicker {
         item.style.overflow = "hidden"
         item.style.alignItems = "center"
         item.style.justifyContent = "center"
-        item.style.width = "100px"
-        item.style.height = "100px"
+        item.style.width = `${this.boxWidth}px`
+        item.style.height = `${this.boxHeight}px`
+        item.style.color = this.boxTextColor
+        item.style.backgroundColor = this.boxColor
+        item.style.fontSize = `${this.fontSize}pt`
         item.style.minWidth = item.style.width
         item.style.minHeight = item.style.height
         item.style.margin = "16px"
@@ -172,6 +203,7 @@ export class ModulePicker {
         text.style.overflow = "hidden"
         text.style.textOverflow = "ellipsis"
         text.style.textAlign = "center"
+        text.style.padding = "8px"
         item.appendChild(text)
 
         item.onclick = (e: MouseEvent) => {
@@ -192,10 +224,10 @@ export class ModulePicker {
     }
 
     render() {
+        this.container.style.backgroundColor = this.backgroundColor
         let groupedData = this.applyFilter()
         let groupNames = Array.from(groupedData.keys())
 
-        console.log(groupNames)
         for (let j = groupNames.length - 1; j >= 0; j--) {
             let g = groupedData.get(groupNames[j])
 
