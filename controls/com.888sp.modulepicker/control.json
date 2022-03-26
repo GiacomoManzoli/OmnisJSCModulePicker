@@ -9,10 +9,13 @@
         "hasdefaultborder": false,
         "hasdisplayformat": false,
         "hasdragevents": false,
-        "uselegacycolors": true
+        "uselegacycolors": false
     },
-    "customtabname": "Picker",
-    "standardproperties": ["dataname", "font"],
+    "customtabname":  "Picker",
+    "standardproperties" :  [
+        "dataname",
+        "font"
+    ],
     "properties": {
         "filter": {
             "id": 1,
@@ -111,7 +114,6 @@
             "type": "color",
             "tab": "custom",
             "runtimeonly": false,
-            "findandreplace": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
@@ -125,16 +127,72 @@
             "type": "boolean",
             "tab": "custom",
             "runtimeonly": false,
-            "findandreplace": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
             "constrangeend": "",
             "initial": 0,
             "editreadonly": false
+        },
+        "boxhasshadow": {
+            "id": 10,
+            "desc": "",
+            "type": "boolean",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": "",
+            "editreadonly": false
+        },
+        "boxborderwidth": {
+            "id": 11,
+            "desc": "",
+            "type": "integer",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": "",
+            "editreadonly": false
+        },
+        "boxborderradius": {
+            "id": 12,
+            "desc": "",
+            "type": "integer",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": "",
+            "editreadonly": false
+        },
+        "boxbordercolor": {
+            "id": 13,
+            "desc": "",
+            "type": "color",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": "",
+            "editreadonly": false
         }
     },
-    "constants": {},
+    "constants": {
+    },
     "events": {
         "evNetOmnisControlOpened": {
             "id": 1,
@@ -169,8 +227,10 @@
             ]
         }
     },
-    "methods": {},
+    "methods": {
+    },
     "html": {
-        "template": "<div %o %s data-props='%p' data-mvprops='%m'></div>"
+        "template": "<div %o %s data-props='%p' data-mvprops='%m'></div>",
+        "extrastyles": "display:flex; flex-direction:column;"
     }
 }

@@ -97,7 +97,7 @@
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "@keyframes tab-ripple {\n    to {\n        transform: scale(4);\n        opacity: 0;\n    }\n}\n\nspan.tab-ripple {\n    position: absolute; /* The absolute position we mentioned earlier */\n    border-radius: 50%;\n    transform: scale(0);\n    animation: tab-ripple 600ms linear;\n    background-color: rgba(0, 0, 0, 0.1);\n}\n\n@keyframes append-animate {\n    from {\n        opacity: 0;\n    }\n    to {\n        opacity: 1;\n    }\n}\n", ""]);
+exports.push([module.i, "@keyframes tab-ripple {\r\n    to {\r\n        transform: scale(4);\r\n        opacity: 0;\r\n    }\r\n}\r\n\r\nspan.tab-ripple {\r\n    position: absolute; /* The absolute position we mentioned earlier */\r\n    border-radius: 50%;\r\n    transform: scale(0);\r\n    animation: tab-ripple 600ms linear;\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n@keyframes append-animate {\r\n    from {\r\n        opacity: 0;\r\n    }\r\n    to {\r\n        opacity: 1;\r\n    }\r\n}\r\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -521,6 +521,9 @@ var ModulePicker = /** @class */ (function () {
         this.filter = "";
         this.rendered = new Map();
         this.defaultCollapsed = false;
+        this.boxHasShadow = false;
+        this.boxBorderWidth = 0;
+        this.boxBorderRadius = 0;
         this.container = container;
         this.container.innerHTML = "";
         this.handlers = new Map();
@@ -647,7 +650,17 @@ var ModulePicker = /** @class */ (function () {
         item.style.minWidth = item.style.width;
         item.style.minHeight = item.style.height;
         item.style.margin = "16px";
-        item.style.boxShadow = "\n        0 2px 8px 0 rgba(var(--shadow-color), 0.14), \n        0 1px 8px 0 rgba(var(--shadow-color), 0.12),\n        0 1px 2px -1px rgba(var(--shadow-color), 0.2)";
+        if (this.boxHasShadow) {
+            item.style.boxShadow = "\n        0 2px 8px 0 rgba(var(--shadow-color), 0.14), \n        0 1px 8px 0 rgba(var(--shadow-color), 0.12),\n        0 1px 2px -1px rgba(var(--shadow-color), 0.2)";
+        }
+        if (this.boxBorderWidth > 0) {
+            item.style.borderColor = this.boxBorderColor;
+            item.style.borderStyle = "solid";
+            item.style.borderWidth = this.boxBorderWidth + "px";
+        }
+        if (this.boxBorderRadius) {
+            item.style.borderRadius = this.boxBorderRadius + "px";
+        }
         item.style.animation = "append-animate .3s linear";
         var text = document.createElement("span");
         text.innerText = m.module.name;
@@ -783,6 +796,11 @@ var PROPERTIES = {
     boxtextcolor: "$boxtextcolor",
     backgroundcolor: "$::backgroundcolor",
     defaultcollapsed: "$defaultcollapsed",
+    boxhasshadow: "$boxhasshadow",
+    boxborderwidth: "$boxborderwidth",
+    boxborderradius: "$boxborderradius",
+    boxbordercolor: "$boxbordercolor"
+    // <OmnisUpdateMarker_PropertyConstants_End>
 };
 var EVENTS = {
     evNetOmnisControlOpened: 1,
@@ -879,7 +897,7 @@ var ctrl_com_888sp_modulepicker = /** @class */ (function (_super) {
                     return true;
                 // Main control
                 case PROPERTIES.backgroundcolor:
-                    this.picker.backgroundColor = propValue;
+                    this.picker.backgroundColor = this.getTheme().getColorString(propValue);
                     return true;
                 case PROPERTIES.fontsize:
                     this.picker.fontSize = propValue;
@@ -889,8 +907,7 @@ var ctrl_com_888sp_modulepicker = /** @class */ (function (_super) {
                     return true;
                 // BOX
                 case PROPERTIES.boxcolor:
-                    // With uselegacycolor -> it's a rgb HEX string, else it's an OmnisNumericColor (int value)
-                    this.picker.boxColor = propValue;
+                    this.picker.boxColor = this.getTheme().getColorString(propValue);
                     return true;
                 case PROPERTIES.boxheight:
                     this.picker.boxHeight = propValue;
@@ -899,7 +916,19 @@ var ctrl_com_888sp_modulepicker = /** @class */ (function (_super) {
                     this.picker.boxWidth = propValue;
                     return true;
                 case PROPERTIES.boxtextcolor:
-                    this.picker.boxTextColor = propValue;
+                    this.picker.boxTextColor = this.getTheme().getColorString(propValue);
+                    return true;
+                case PROPERTIES.boxhasshadow:
+                    this.picker.boxHasShadow = propValue;
+                    return true;
+                case PROPERTIES.boxborderwidth:
+                    this.picker.boxBorderWidth = propValue;
+                    return true;
+                case PROPERTIES.boxborderradius:
+                    this.picker.boxBorderRadius = propValue;
+                    return true;
+                case PROPERTIES.boxbordercolor:
+                    this.picker.boxBorderColor = this.getTheme().getColorString(propValue);
                     return true;
             }
         }
@@ -925,6 +954,14 @@ var ctrl_com_888sp_modulepicker = /** @class */ (function (_super) {
                 return this.picker.boxWidth;
             case PROPERTIES.boxtextcolor:
                 return this.picker.boxTextColor;
+            case PROPERTIES.boxhasshadow:
+                return this.picker.boxHasShadow;
+            case PROPERTIES.boxborderwidth:
+                return this.picker.boxBorderWidth;
+            case PROPERTIES.boxborderradius:
+                return this.picker.boxBorderRadius;
+            case PROPERTIES.boxbordercolor:
+                return this.picker.boxBorderColor;
         }
         return _super.prototype.getProperty.call(this, propNumber);
     };

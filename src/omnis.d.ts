@@ -136,7 +136,7 @@ declare class ctrl_base {
     sendEvent: (event: any) => void
     getData(): any
 
-    getTheme(): any
+    getTheme(): JOmnisTheme
 }
 
 /**
@@ -269,7 +269,7 @@ declare class omnis_list {
     getListData(): omnis_raw_list
 }
 
-declare class omnis_raw_list {}
+declare class omnis_raw_list { }
 
 declare type OmnisEventName = string | number // numero per le proprietà interne di Omnis, stringa per quelle user-defined
 
@@ -314,3 +314,84 @@ declare class JOmnisEffects {
     setRippleColor(elem: HTMLElement, theme: any, elemColor: OmnisRGBInt, directColor: OmnisRGBInt): void
 }
 declare var jOmnisEffects: JOmnisEffects
+
+
+declare class JOmnisTheme {
+    COLORS: { "default": -1, "none": -2, "transparent": -3, "neutral": -2147483464, "neutralText": -2147483463, "primary": -2147483462, "primaryDark": -2147483461, "primaryLight": -2147483460, "primaryText": -2147483459, "primaryDarkText": -2147483458, "primaryLightText": -2147483457, "secondary": -2147483456, "secondaryDark": -2147483455, "secondaryLight": -2147483454, "secondaryText": -2147483453, "secondaryDarkText": -2147483452, "secondaryLightText": -2147483451, "error": -2147483450, "errorText": -2147483449, "background": -2147483448, "backgroundText": -2147483447, "surface": -2147483446, "surfaceText": -2147483445, "focusedRow": -2147483444, "focusedRowText": -2147483443, "border": -2147483442, "dialog": -2147483441, "dialogText": -2147483440, "dialogTitle": -2147483439, "dialogTitleText": -2147483438, "disabled": -2147483437, "disabledText": -2147483436, "focusIndicator": -2147483435 }
+    COLOR_NAMES: { "none": "none", "transparent": "transparent", "neutral": "neutral", "neutralText": "neutralText", "primary": "primary", "primaryDark": "primaryDark", "primaryLight": "primaryLight", "primaryText": "primaryText", "primaryDarkText": "primaryDarkText", "primaryLightText": "primaryLightText", "secondary": "secondary", "secondaryDark": "secondaryDark", "secondaryLight": "secondaryLight", "secondaryText": "secondaryText", "secondaryDarkText": "secondaryDarkText", "secondaryLightText": "secondaryLightText", "error": "error", "errorText": "errorText", "background": "background", "backgroundText": "backgroundText", "surface": "surface", "surfaceText": "surfaceText", "focusedRow": "focusedRow", "focusedRowText": "focusedRowText", "border": "border", "dialog": "dialog", "dialogText": "dialogText", "dialogTitle": "dialogTitle", "dialogTitleText": "dialogTitleText", "disabled": "disabled", "disabledText": "disabledText", "focusIndicator": "focusIndicator" }
+
+    /**
+     * Gets string suitable for assigning to a css style
+     * @param n The input color value (either an RGB Int or a Theme.COLORS constant).
+     * @param defaultColor A default color to use, in the case that 'color' is kColorDefault or an unknown constant. Can also be a Theme.COLORS constant.
+     * @param alpha  An alpha value between 0 and 1. Defaults to 1.
+     * 
+     * @returns An RGB color string
+     */
+    getColorString(n: number, defaultColor?: number, alpha?: number): string
+
+    /**
+     * Gets string suitable for assigning to a css style similar to getColorString() but automatically calculates the text color based on the onColor if textColor is kColorDefault and onColor is a theme color with an associated text color.
+     * @param textColor The color (either an RGB integer or a Theme.COLORS constant) for the text.
+     * @param onColor The background color on which the text will be displayed.
+     * @param defaultColor The color to fall back to in the case that textColor is kColorDefault & onColor is not a valid theme color with associated text color.
+     * @returns An RGB color string.
+     */
+    getTextColorString(textColor: number, onColor: number, defaultColor: number): string
+
+    /**
+     * Gets the resolved Omnis RGB Integer of the specified color (resolves color constants to their true RGB values).
+     * @param color The input color value (either an Omnis RGB Int or a color constant)
+     * @param defaultColor A default color to use, in the case that 'color' is kColorDefault or an unknown constant. Can also be a Theme.COLORS constant, but must not be kColorDefault (-1)
+     * @returns An Omnis RGB Integer representing the color
+     */
+    getColorRGB(color: number, defaultColor?: number): number
+}
+declare var Theme: JOmnisTheme
+
+
+declare class JOmnisIcons {
+
+    /**
+     * Gets the checked image URL corresponding to a normal image URL. According to icon set naming rules. (Previously a jOmnis method)
+     * @param normalUrl The url to the normal (unchecked) image.
+     * @returns The url to the checked version of the image
+     */
+    getCheckedImage(normalUrl: string): string
+
+    /**
+     * Returns the dimensions of the image, as a string suitable to be applied to an element’s background-size style value. I.e. “<width>px <height>px”
+     * @param iconUrl The URL to the image.
+     * @returns A string suitable to be applied to an element’s background-size style value. I.e. “<width>px <height>px”
+     */
+    getIconBackSize(iconUrl: string): string
+
+    /**
+     * Returns either an object with width and height members indicating the size of the icon for the url, or a CSS style to set the background size.
+
+If pCssStyle is false, and the size is not available (such as for a stand-alone page not in an ICON set) returns an empty object.
+
+The icon name must conform to Omnis Icon Set naming syntax.
+     * @param iconUrl The url to the icon image
+     * @param cssStyle  Whether to return a CSS style string. e.g. “background-size: 50px 80px;”
+     * @param isSvg Either null (or omitted) meaning detect if SVG from iconUrl, or Boolean indicating if the image is SVG
+     * @returns (String or Object): Either an object with width and height members indicating the size of the icon for the url or a CSS style to set the background size. If the size is not available (such as for a stand-alone page not in an ICON set), return an empty object:
+        If pCssStyle=true, returns a CSS style string. e.g. “background-size: 50px 80px;”
+        If pCssStyle=false, returns a JavaScript Object containing width and height properties.
+     */
+    getIconSize(iconUrl: string, cssStyle: boolean, isSvg?: boolean): string | object
+
+
+    /**
+     * Replaces if present, or adds if absent, an icon to an element.
+     * @param parentElem The parent element to which the specified icon is to be added; if the parent already contains an icon it is replaced,otherwise this method adds the icon after any existing children in the parent.
+     * @param iconUrl  The URL to the image.
+     * @param loadFunc  The function to call when the image has loaded (null or omitted if onload is not required).
+     * @param sizeObj If not null, a size object to override the size specified by the iconUrl
+     * @param alwaysCreate  If true, always create and append (so we do not replace an existing element)
+     * @returns The element being used for the icon or null if there is no icon or no useful icon URL
+     */
+    replaceOrAddToElem(parentElem: HTMLElement, iconUrl: string, loadFunc?: Function, sizeObj?: object, alwaysCreate?: boolean): HTMLElement
+}
+
+declare var jIcons: JOmnisIcons

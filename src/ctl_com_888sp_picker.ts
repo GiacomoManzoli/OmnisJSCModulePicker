@@ -13,6 +13,10 @@ var PROPERTIES = {
     boxtextcolor: "$boxtextcolor",
     backgroundcolor: "$::backgroundcolor",
     defaultcollapsed: "$defaultcollapsed",
+    boxhasshadow: "$boxhasshadow",
+    boxborderwidth: "$boxborderwidth",
+    boxborderradius: "$boxborderradius",
+    boxbordercolor: "$boxbordercolor"
     // <OmnisUpdateMarker_PropertyConstants_End>
 }
 
@@ -127,7 +131,7 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
                     return true
                 // Main control
                 case PROPERTIES.backgroundcolor:
-                    this.picker.backgroundColor = propValue as string
+                    this.picker.backgroundColor = this.getTheme().getColorString(propValue)
                     return true
                 case PROPERTIES.fontsize:
                     this.picker.fontSize = propValue as number
@@ -137,8 +141,7 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
                     return true
                 // BOX
                 case PROPERTIES.boxcolor:
-                    // With uselegacycolor -> it's a rgb HEX string, else it's an OmnisNumericColor (int value)
-                    this.picker.boxColor = propValue as string
+                    this.picker.boxColor = this.getTheme().getColorString(propValue)
                     return true
                 case PROPERTIES.boxheight:
                     this.picker.boxHeight = propValue as number
@@ -147,10 +150,23 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
                     this.picker.boxWidth = propValue as number
                     return true
                 case PROPERTIES.boxtextcolor:
-                    this.picker.boxTextColor = propValue as string
+                    this.picker.boxTextColor = this.getTheme().getColorString(propValue)
+                    return true
+                case PROPERTIES.boxhasshadow:
+                    this.picker.boxHasShadow = propValue as boolean
+                    return true
+                case PROPERTIES.boxborderwidth:
+                    this.picker.boxBorderWidth = propValue as number
+                    return true
+                case PROPERTIES.boxborderradius:
+                    this.picker.boxBorderRadius = propValue as number
+                    return true
+                case PROPERTIES.boxbordercolor:
+                    this.picker.boxBorderColor = this.getTheme().getColorString(propValue)
                     return true
             }
         }
+
 
         return super.setProperty(propNumber, propValue)
     }
@@ -175,6 +191,14 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
                 return this.picker.boxWidth
             case PROPERTIES.boxtextcolor:
                 return this.picker.boxTextColor
+            case PROPERTIES.boxhasshadow:
+                return this.picker.boxHasShadow
+            case PROPERTIES.boxborderwidth:
+                return this.picker.boxBorderWidth
+            case PROPERTIES.boxborderradius:
+                return this.picker.boxBorderRadius
+            case PROPERTIES.boxbordercolor:
+                return this.picker.boxBorderColor
         }
         return super.getProperty(propNumber)
     }

@@ -45,6 +45,14 @@ export class ModulePicker {
     public boxTextColor: string
     public defaultCollapsed: boolean = false
 
+
+    public boxHasShadow: boolean = false
+    public boxBorderWidth: number = 0
+    public boxBorderRadius: number = 0
+    public boxBorderColor: string
+
+
+
     constructor(container: HTMLElement) {
         this.container = container
         this.container.innerHTML = ""
@@ -191,10 +199,24 @@ export class ModulePicker {
         item.style.minWidth = item.style.width
         item.style.minHeight = item.style.height
         item.style.margin = "16px"
-        item.style.boxShadow = `
+
+        if (this.boxHasShadow) {
+            item.style.boxShadow = `
         0 2px 8px 0 rgba(var(--shadow-color), 0.14), 
         0 1px 8px 0 rgba(var(--shadow-color), 0.12),
         0 1px 2px -1px rgba(var(--shadow-color), 0.2)`
+        }
+
+        if (this.boxBorderWidth > 0) {
+            item.style.borderColor = this.boxBorderColor
+            item.style.borderStyle = "solid"
+            item.style.borderWidth = `${this.boxBorderWidth}px`
+        }
+        if (this.boxBorderRadius) {
+            item.style.borderRadius = `${this.boxBorderRadius}px`
+        }
+
+
 
         item.style.animation = "append-animate .3s linear"
 
