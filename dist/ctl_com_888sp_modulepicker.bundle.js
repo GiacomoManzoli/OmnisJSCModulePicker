@@ -97,7 +97,7 @@
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "@keyframes tab-ripple {\r\n    to {\r\n        transform: scale(4);\r\n        opacity: 0;\r\n    }\r\n}\r\n\r\nspan.tab-ripple {\r\n    position: absolute; /* The absolute position we mentioned earlier */\r\n    border-radius: 50%;\r\n    transform: scale(0);\r\n    animation: tab-ripple 600ms linear;\r\n    background-color: rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n@keyframes append-animate {\r\n    from {\r\n        opacity: 0;\r\n    }\r\n    to {\r\n        opacity: 1;\r\n    }\r\n}\r\n", ""]);
+exports.push([module.i, "@keyframes tab-ripple {\n    to {\n        transform: scale(4);\n        opacity: 0;\n    }\n}\n\nspan.tab-ripple {\n    position: absolute; /* The absolute position we mentioned earlier */\n    border-radius: 50%;\n    transform: scale(0);\n    animation: tab-ripple 600ms linear;\n    background-color: rgba(0, 0, 0, 0.1);\n}\n\n@keyframes append-animate {\n    from {\n        opacity: 0;\n    }\n    to {\n        opacity: 1;\n    }\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -498,8 +498,15 @@ module.exports = function (list, options) {
 
 "use strict";
 
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModulePicker = exports.Module = void 0;
+exports.ModulePicker = exports.TextAlign = exports.Module = void 0;
 __webpack_require__(/*! ./style.css */ "./src/style.css");
 var Module = /** @class */ (function () {
     function Module(data) {
@@ -511,6 +518,12 @@ var Module = /** @class */ (function () {
     return Module;
 }());
 exports.Module = Module;
+var TextAlign;
+(function (TextAlign) {
+    TextAlign[TextAlign["Left"] = 0] = "Left";
+    TextAlign[TextAlign["Right"] = 1] = "Right";
+    TextAlign[TextAlign["Center"] = 2] = "Center";
+})(TextAlign = exports.TextAlign || (exports.TextAlign = {}));
 var ModuleGroup = /** @class */ (function () {
     function ModuleGroup() {
     }
@@ -524,6 +537,9 @@ var ModulePicker = /** @class */ (function () {
         this.boxHasShadow = false;
         this.boxBorderWidth = 0;
         this.boxBorderRadius = 0;
+        this.boxTitleAlign = TextAlign.Center;
+        this.groupHorzScroll = false;
+        this.showGroups = true;
         this.container = container;
         this.container.innerHTML = "";
         this.handlers = new Map();
@@ -534,6 +550,12 @@ var ModulePicker = /** @class */ (function () {
     ModulePicker.prototype.setModules = function (modules) {
         var _this = this;
         this.rendered = new Map();
+        modules = __spreadArrays(modules);
+        if (!this.showGroups) {
+            modules.forEach(function (m) {
+                m.group = "";
+            });
+        }
         modules.forEach(function (v) {
             var group = v.group;
             if (_this.rendered.has(group)) {
@@ -547,7 +569,7 @@ var ModulePicker = /** @class */ (function () {
             else {
                 var moduleGroup = new ModuleGroup();
                 moduleGroup.group = v.group;
-                moduleGroup.expanded = !_this.defaultCollapsed;
+                moduleGroup.expanded = !_this.defaultCollapsed || !_this.showGroups;
                 moduleGroup.visible = true;
                 moduleGroup.element = null;
                 moduleGroup.modules = [
@@ -586,36 +608,44 @@ var ModulePicker = /** @class */ (function () {
     ModulePicker.prototype.createGroupElement = function (g) {
         var _this = this;
         var groupContainer = document.createElement("div");
-        var title = document.createElement("p");
-        title.style.fontWeight = "bold";
-        title.style.cursor = "pointer";
-        title.style.fontSize = this.titleFontSize + "pt";
-        var expandCollapse = document.createElement("span");
-        expandCollapse.innerText = "+";
-        expandCollapse.style.display = "inline-block";
-        expandCollapse.style.width = this.titleFontSize + 1 + "pt";
-        expandCollapse.style.height = this.titleFontSize + 1 + "pt";
-        expandCollapse.style.textAlign = "center";
-        title.appendChild(expandCollapse);
-        var titleText = document.createElement("span");
-        titleText.innerText = "";
-        title.appendChild(titleText);
-        groupContainer.appendChild(title);
-        title.onclick = function (e) {
-            g.expanded = !g.expanded;
-            _this.updateGroupElement(g);
-            var ul = g.element.querySelector("ul");
-            if (ul) {
-                ul.style.display = g.expanded ? "flex" : "none";
-                var lis = ul.getElementsByClassName("tab-ripple");
-                for (var i = 0; i < lis.length; i++) {
-                    lis.item(i).remove();
+        if (this.showGroups) {
+            var title = document.createElement("p");
+            title.style.fontWeight = "bold";
+            title.style.cursor = "pointer";
+            title.style.fontSize = this.titleFontSize + "pt";
+            var expandCollapse = document.createElement("span");
+            expandCollapse.innerText = "+";
+            expandCollapse.style.display = "inline-block";
+            expandCollapse.style.width = this.titleFontSize + 1 + "pt";
+            expandCollapse.style.height = this.titleFontSize + 1 + "pt";
+            expandCollapse.style.textAlign = "center";
+            title.appendChild(expandCollapse);
+            var titleText = document.createElement("span");
+            titleText.innerText = "";
+            title.appendChild(titleText);
+            groupContainer.appendChild(title);
+            title.onclick = function (e) {
+                g.expanded = !g.expanded;
+                _this.updateGroupElement(g);
+                var ul = g.element.querySelector("ul");
+                if (ul) {
+                    ul.style.display = g.expanded ? "flex" : "none";
+                    var lis = ul.getElementsByClassName("tab-ripple");
+                    for (var i = 0; i < lis.length; i++) {
+                        lis.item(i).remove();
+                    }
                 }
-            }
-        };
+            };
+        }
         var listContainer = document.createElement("ul");
         listContainer.style.display = g.expanded ? "flex" : "none";
-        listContainer.style.flexWrap = "wrap";
+        if (this.groupHorzScroll) {
+            listContainer.style.flexWrap = "nowrap";
+            listContainer.style.overflowX = "auto";
+        }
+        else {
+            listContainer.style.flexWrap = "wrap";
+        }
         listContainer.style.width = "100%";
         listContainer.style.listStyleType = "none";
         listContainer.style.padding = "0";
@@ -626,11 +656,13 @@ var ModulePicker = /** @class */ (function () {
     };
     ModulePicker.prototype.updateGroupElement = function (g) {
         g.element.style.display = g.visible ? "block" : "none";
-        var title = g.element.querySelector("p");
-        var titleContent = Array.from(title.querySelectorAll("span"));
-        var expandCollapse = titleContent[0], titleText = titleContent[1];
-        expandCollapse.innerText = g.expanded ? "-" : "+";
-        titleText.innerText = g.group;
+        if (this.showGroups) {
+            var title = g.element.querySelector("p");
+            var titleContent = Array.from(title.querySelectorAll("span"));
+            var expandCollapse = titleContent[0], titleText = titleContent[1];
+            expandCollapse.innerText = g.expanded ? "-" : "+";
+            titleText.innerText = g.group;
+        }
         // text.innerText = g.group
     };
     ModulePicker.prototype.createModuleElement = function (m) {
@@ -649,7 +681,13 @@ var ModulePicker = /** @class */ (function () {
         item.style.fontSize = this.fontSize + "pt";
         item.style.minWidth = item.style.width;
         item.style.minHeight = item.style.height;
-        item.style.margin = "16px";
+        if (this.showGroups) {
+            item.style.margin = "16px";
+        }
+        else {
+            // Senza gruppi l'indentazione a sinistra non serve
+            item.style.margin = "0 16px 16px 0";
+        }
         if (this.boxHasShadow) {
             item.style.boxShadow = "\n        0 2px 8px 0 rgba(var(--shadow-color), 0.14), \n        0 1px 8px 0 rgba(var(--shadow-color), 0.12),\n        0 1px 2px -1px rgba(var(--shadow-color), 0.2)";
         }
@@ -664,9 +702,20 @@ var ModulePicker = /** @class */ (function () {
         item.style.animation = "append-animate .3s linear";
         var text = document.createElement("span");
         text.innerText = m.module.name;
+        text.style.flex = "1";
         text.style.overflow = "hidden";
         text.style.textOverflow = "ellipsis";
-        text.style.textAlign = "center";
+        switch (this.boxTitleAlign) {
+            case TextAlign.Left:
+                text.style.textAlign = "left";
+                break;
+            case TextAlign.Right:
+                text.style.textAlign = "right";
+                break;
+            case TextAlign.Center:
+                text.style.textAlign = "center";
+                break;
+        }
         text.style.padding = "8px";
         item.appendChild(text);
         item.onclick = function (e) {
@@ -799,8 +848,10 @@ var PROPERTIES = {
     boxhasshadow: "$boxhasshadow",
     boxborderwidth: "$boxborderwidth",
     boxborderradius: "$boxborderradius",
-    boxbordercolor: "$boxbordercolor"
-    // <OmnisUpdateMarker_PropertyConstants_End>
+    boxbordercolor: "$boxbordercolor",
+    showgroups: "$showgroups",
+    boxtitlealign: "$boxtitlealign",
+    grouphorzscroll: "$grouphorzscroll",
 };
 var EVENTS = {
     evNetOmnisControlOpened: 1,
@@ -930,6 +981,15 @@ var ctrl_com_888sp_modulepicker = /** @class */ (function (_super) {
                 case PROPERTIES.boxbordercolor:
                     this.picker.boxBorderColor = this.getTheme().getColorString(propValue);
                     return true;
+                case PROPERTIES.boxtitlealign:
+                    this.picker.boxTitleAlign = propValue;
+                    return true;
+                case PROPERTIES.showgroups:
+                    this.picker.showGroups = propValue;
+                    return true;
+                case PROPERTIES.grouphorzscroll:
+                    this.picker.groupHorzScroll = propValue;
+                    return true;
             }
         }
         return _super.prototype.setProperty.call(this, propNumber, propValue);
@@ -962,6 +1022,10 @@ var ctrl_com_888sp_modulepicker = /** @class */ (function (_super) {
                 return this.picker.boxBorderRadius;
             case PROPERTIES.boxbordercolor:
                 return this.picker.boxBorderColor;
+            case PROPERTIES.boxtitlealign:
+                return this.picker.boxTitleAlign;
+            case PROPERTIES.grouphorzscroll:
+                return this.picker.groupHorzScroll;
         }
         return _super.prototype.getProperty.call(this, propNumber);
     };

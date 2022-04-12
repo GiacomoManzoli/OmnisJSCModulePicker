@@ -11,11 +11,8 @@
         "hasdragevents": false,
         "uselegacycolors": false
     },
-    "customtabname":  "Picker",
-    "standardproperties" :  [
-        "dataname",
-        "font"
-    ],
+    "customtabname": "Picker",
+    "standardproperties": ["dataname", "font"],
     "properties": {
         "filter": {
             "id": 1,
@@ -140,7 +137,6 @@
             "type": "boolean",
             "tab": "custom",
             "runtimeonly": false,
-            "findandreplace": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
@@ -154,7 +150,6 @@
             "type": "integer",
             "tab": "custom",
             "runtimeonly": false,
-            "findandreplace": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
@@ -168,7 +163,6 @@
             "type": "integer",
             "tab": "custom",
             "runtimeonly": false,
-            "findandreplace": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
@@ -182,17 +176,57 @@
             "type": "color",
             "tab": "custom",
             "runtimeonly": false,
-            "findandreplace": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
             "constrangeend": "",
             "initial": "",
             "editreadonly": false
+        },
+        "showgroups": {
+            "id": 14,
+            "desc": "",
+            "type": "boolean",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": 1,
+            "editreadonly": false
+        },
+        "boxtitlealign": {
+            "id": 15,
+            "desc": "",
+            "type": "integer",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": true,
+            "constrangestart": 170,
+            "constrangeend": 172,
+            "initial": 2,
+            "editreadonly": false
+        },
+        "grouphorzscroll": {
+            "id": 16,
+            "desc": "If true, the group contents has an horz. scroll bar.",
+            "type": "boolean",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": 0,
+            "editreadonly": false
         }
     },
-    "constants": {
-    },
+    "constants": {},
     "events": {
         "evNetOmnisControlOpened": {
             "id": 1,
@@ -227,8 +261,7 @@
             ]
         }
     },
-    "methods": {
-    },
+    "methods": {},
     "html": {
         "template": "<div %o %s data-props='%p' data-mvprops='%m'></div>",
         "extrastyles": "display:flex; flex-direction:column;"

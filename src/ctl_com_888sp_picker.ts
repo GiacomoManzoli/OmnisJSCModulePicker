@@ -1,4 +1,4 @@
-import { Module, ModulePicker } from "./ModulePicker"
+import { Module, ModulePicker, TextAlign } from "./ModulePicker"
 
 // import "./style.css"
 /****** CONSTANTS ******/
@@ -16,7 +16,10 @@ var PROPERTIES = {
     boxhasshadow: "$boxhasshadow",
     boxborderwidth: "$boxborderwidth",
     boxborderradius: "$boxborderradius",
-    boxbordercolor: "$boxbordercolor"
+    boxbordercolor: "$boxbordercolor",
+    showgroups: "$showgroups",
+    boxtitlealign: "$boxtitlealign",
+    grouphorzscroll: "$grouphorzscroll",
     // <OmnisUpdateMarker_PropertyConstants_End>
 }
 
@@ -164,9 +167,17 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
                 case PROPERTIES.boxbordercolor:
                     this.picker.boxBorderColor = this.getTheme().getColorString(propValue)
                     return true
+                case PROPERTIES.boxtitlealign:
+                    this.picker.boxTitleAlign = propValue as TextAlign
+                    return true
+                case PROPERTIES.showgroups:
+                    this.picker.showGroups = propValue as boolean
+                    return true
+                case PROPERTIES.grouphorzscroll:
+                    this.picker.groupHorzScroll = propValue as boolean
+                    return true
             }
         }
-
 
         return super.setProperty(propNumber, propValue)
     }
@@ -199,6 +210,10 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
                 return this.picker.boxBorderRadius
             case PROPERTIES.boxbordercolor:
                 return this.picker.boxBorderColor
+            case PROPERTIES.boxtitlealign:
+                return this.picker.boxTitleAlign
+            case PROPERTIES.grouphorzscroll:
+                return this.picker.groupHorzScroll
         }
         return super.getProperty(propNumber)
     }

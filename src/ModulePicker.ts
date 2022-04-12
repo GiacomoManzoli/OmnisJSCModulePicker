@@ -12,6 +12,12 @@ export class Module {
     }
 }
 
+export enum TextAlign {
+    Left = 0,
+    Right = 1,
+    Center = 2,
+}
+
 declare type ModuleData = {
     visible: boolean
     module: Module
@@ -45,13 +51,14 @@ export class ModulePicker {
     public boxTextColor: string
     public defaultCollapsed: boolean = false
 
-
     public boxHasShadow: boolean = false
     public boxBorderWidth: number = 0
     public boxBorderRadius: number = 0
     public boxBorderColor: string
+    public boxTitleAlign: TextAlign = TextAlign.Center
 
-
+    public groupHorzScroll: boolean = false
+    public showGroups: boolean = true
 
     constructor(container: HTMLElement) {
         this.container = container
@@ -64,6 +71,13 @@ export class ModulePicker {
 
     setModules(modules: Module[]) {
         this.rendered = new Map()
+        modules = [...modules]
+        if (!this.showGroups) {
+            modules.forEach((m) => {
+                m.group = ""
+            })
+        }
+
         modules.forEach((v) => {
             let { group } = v
             if (this.rendered.has(group)) {
@@ -76,7 +90,7 @@ export class ModulePicker {
             } else {
                 let moduleGroup = new ModuleGroup()
                 moduleGroup.group = v.group
-                moduleGroup.expanded = !this.defaultCollapsed
+                moduleGroup.expanded = !this.defaultCollapsed || !this.showGroups
                 moduleGroup.visible = true
                 moduleGroup.element = null
                 moduleGroup.modules = [
@@ -121,44 +135,53 @@ export class ModulePicker {
     private createGroupElement(g: ModuleGroup) {
         let groupContainer = document.createElement("div")
 
-        let title = document.createElement("p")
-        title.style.fontWeight = "bold"
+        if (this.showGroups) {
+            let title = document.createElement("p")
+            title.style.fontWeight = "bold"
 
-        title.style.cursor = "pointer"
-        title.style.fontSize = `${this.titleFontSize}pt`
+            title.style.cursor = "pointer"
+            title.style.fontSize = `${this.titleFontSize}pt`
 
-        let expandCollapse = document.createElement("span")
-        expandCollapse.innerText = "+"
-        expandCollapse.style.display = "inline-block"
-        expandCollapse.style.width = `${this.titleFontSize + 1}pt`
-        expandCollapse.style.height = `${this.titleFontSize + 1}pt`
-        expandCollapse.style.textAlign = "center"
+            let expandCollapse = document.createElement("span")
+            expandCollapse.innerText = "+"
+            expandCollapse.style.display = "inline-block"
+            expandCollapse.style.width = `${this.titleFontSize + 1}pt`
+            expandCollapse.style.height = `${this.titleFontSize + 1}pt`
+            expandCollapse.style.textAlign = "center"
 
-        title.appendChild(expandCollapse)
+            title.appendChild(expandCollapse)
 
-        let titleText = document.createElement("span")
-        titleText.innerText = ""
-        title.appendChild(titleText)
+            let titleText = document.createElement("span")
+            titleText.innerText = ""
+            title.appendChild(titleText)
 
-        groupContainer.appendChild(title)
+            groupContainer.appendChild(title)
 
-        title.onclick = (e: MouseEvent) => {
-            g.expanded = !g.expanded
-            this.updateGroupElement(g)
-            let ul = g.element.querySelector("ul")
-            if (ul) {
-                ul.style.display = g.expanded ? "flex" : "none"
+            title.onclick = (e: MouseEvent) => {
+                g.expanded = !g.expanded
+                this.updateGroupElement(g)
+                let ul = g.element.querySelector("ul")
+                if (ul) {
+                    ul.style.display = g.expanded ? "flex" : "none"
 
-                let lis = ul.getElementsByClassName("tab-ripple")
-                for (let i = 0; i < lis.length; i++) {
-                    lis.item(i).remove()
+                    let lis = ul.getElementsByClassName("tab-ripple")
+                    for (let i = 0; i < lis.length; i++) {
+                        lis.item(i).remove()
+                    }
                 }
             }
         }
 
         let listContainer = document.createElement("ul")
         listContainer.style.display = g.expanded ? "flex" : "none"
-        listContainer.style.flexWrap = "wrap"
+
+        if (this.groupHorzScroll) {
+            listContainer.style.flexWrap = "nowrap"
+            listContainer.style.overflowX = "auto"
+        } else {
+            listContainer.style.flexWrap = "wrap"
+        }
+
         listContainer.style.width = "100%"
         listContainer.style.listStyleType = "none"
         listContainer.style.padding = "0"
@@ -172,13 +195,15 @@ export class ModulePicker {
 
     private updateGroupElement(g: ModuleGroup) {
         g.element.style.display = g.visible ? "block" : "none"
-        let title = g.element.querySelector("p")
+        if (this.showGroups) {
+            let title = g.element.querySelector("p")
 
-        let titleContent = Array.from(title.querySelectorAll("span"))
-        let [expandCollapse, titleText] = titleContent
+            let titleContent = Array.from(title.querySelectorAll("span"))
+            let [expandCollapse, titleText] = titleContent
 
-        expandCollapse.innerText = g.expanded ? "-" : "+"
-        titleText.innerText = g.group
+            expandCollapse.innerText = g.expanded ? "-" : "+"
+            titleText.innerText = g.group
+        }
 
         // text.innerText = g.group
     }
@@ -198,7 +223,13 @@ export class ModulePicker {
         item.style.fontSize = `${this.fontSize}pt`
         item.style.minWidth = item.style.width
         item.style.minHeight = item.style.height
-        item.style.margin = "16px"
+
+        if (this.showGroups) {
+            item.style.margin = "16px"
+        } else {
+            // Senza gruppi l'indentazione a sinistra non serve
+            item.style.margin = "0 16px 16px 0"
+        }
 
         if (this.boxHasShadow) {
             item.style.boxShadow = `
@@ -216,15 +247,26 @@ export class ModulePicker {
             item.style.borderRadius = `${this.boxBorderRadius}px`
         }
 
-
-
         item.style.animation = "append-animate .3s linear"
 
         let text = document.createElement("span")
         text.innerText = m.module.name
+        text.style.flex = "1"
         text.style.overflow = "hidden"
         text.style.textOverflow = "ellipsis"
-        text.style.textAlign = "center"
+
+        switch (this.boxTitleAlign) {
+            case TextAlign.Left:
+                text.style.textAlign = "left"
+                break
+            case TextAlign.Right:
+                text.style.textAlign = "right"
+                break
+            case TextAlign.Center:
+                text.style.textAlign = "center"
+                break
+        }
+
         text.style.padding = "8px"
         item.appendChild(text)
 
