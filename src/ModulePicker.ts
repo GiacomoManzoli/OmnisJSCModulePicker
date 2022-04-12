@@ -185,6 +185,11 @@ export class ModulePicker {
         listContainer.style.width = "100%"
         listContainer.style.listStyleType = "none"
         listContainer.style.padding = "0"
+
+        if (!this.showGroups) {
+            listContainer.style.margin = "0"
+        }
+
         // listContainer.style.transition = "display 0.2s ease-out"
         // transition: max-height 0.2s ease-out;
 
