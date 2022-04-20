@@ -233,7 +233,11 @@ export class ModulePicker {
             item.style.margin = "16px"
         } else {
             // Senza gruppi l'indentazione a sinistra non serve
-            item.style.margin = "0 16px 16px 0"
+            if (this.groupHorzScroll) {
+                item.style.margin = "0 16px 4px 0" // Se c'e' la scrollbar, il margine sotto puo' essere ridotto
+            } else {
+                item.style.margin = "0 16px 16px 0"
+            }
         }
 
         if (this.boxHasShadow) {
