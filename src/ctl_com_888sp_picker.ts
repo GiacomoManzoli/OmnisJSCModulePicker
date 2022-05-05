@@ -56,7 +56,6 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
 
     updateCtrl(what, row, col, mustUpdate) {
         var elem = this.getClientElem()
-
         // read $dataname value and display in control
         const dataname = this.getData()
         const datanameList = new omnis_list(dataname)
@@ -122,7 +121,6 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
         if (!this.getCanAssign(propNumber)) {
             return false
         }
-
         if (propNumber) {
             switch (propNumber) {
                 case PROPERTIES.filter:

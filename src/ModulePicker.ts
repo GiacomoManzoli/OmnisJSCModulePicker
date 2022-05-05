@@ -64,13 +64,13 @@ export class ModulePicker {
         this.container = container
         this.container.innerHTML = ""
         this.handlers = new Map()
+        this.rendered = new Map()
     }
     addEventListener(evName: ModulePickerEvent, callback: ModulePickerEventHandler) {
         this.handlers.set(evName, callback)
     }
 
     setModules(modules: Module[]) {
-        this.rendered = new Map()
         modules = [...modules]
         if (!this.showGroups) {
             modules.forEach((m) => {
@@ -79,10 +79,12 @@ export class ModulePicker {
         }
 
         modules.forEach((v) => {
-            let { group } = v
-            if (this.rendered.has(group)) {
-                let g = this.rendered.get(group)
-                g.modules.push({
+            let { group: groupName } = v
+            if (this.rendered.has(groupName)) {
+                let group = this.rendered.get(groupName)
+                // Dumb update: all the modules are blindly added
+                // At render time, it the element already exists, it will be deleted to avoid duplicates
+                group.modules.push({
                     visible: true,
                     module: v,
                     element: null,
@@ -100,11 +102,9 @@ export class ModulePicker {
                         element: null,
                     },
                 ]
-                this.rendered.set(group, moduleGroup)
+                this.rendered.set(groupName, moduleGroup)
             }
         })
-
-        // TODO: gestire cancellazione
     }
 
     setFilter(filter: string) {
@@ -134,6 +134,8 @@ export class ModulePicker {
 
     private createGroupElement(g: ModuleGroup) {
         let groupContainer = document.createElement("div")
+        groupContainer.style.display = "flex"
+        groupContainer.style.flexDirection = "column"
 
         if (this.showGroups) {
             let title = document.createElement("p")
@@ -170,11 +172,13 @@ export class ModulePicker {
                     }
                 }
             }
+        } else {
+            groupContainer.style.height = "100%"
         }
 
         let listContainer = document.createElement("ul")
         listContainer.style.display = g.expanded ? "flex" : "none"
-
+        listContainer.style.flex = "1"
         if (this.groupHorzScroll) {
             listContainer.style.flexWrap = "nowrap"
             listContainer.style.overflowX = "auto"
@@ -199,7 +203,7 @@ export class ModulePicker {
     }
 
     private updateGroupElement(g: ModuleGroup) {
-        g.element.style.display = g.visible ? "block" : "none"
+        g.element.style.display = g.visible ? "flex" : "none"
         if (this.showGroups) {
             let title = g.element.querySelector("p")
 
@@ -321,26 +325,30 @@ export class ModulePicker {
 
             this.updateGroupElement(g)
 
+            let moduleContainer = g.element.querySelector("ul")
+
             for (let i = g.modules.length - 1; i >= 0; i--) {
                 let m = g.modules[i]
-                if (!m.element) {
+                if (m.element) {
+                    // Delete exsisting element
+                    moduleContainer.removeChild(m.element)
+                } else {
+                    // Create new element
                     m.element = this.createModuleElement(m)
-                    let container = g.element.querySelector("ul")
-                    if (container) {
+                    if (moduleContainer) {
                         if (i == 0) {
                             // Inserimento alla fine
-                            container.insertBefore(m.element, container.firstChild)
+                            moduleContainer.insertBefore(m.element, moduleContainer.firstChild)
                         } else if (i == g.modules.length - 1) {
-                            container.appendChild(m.element)
+                            moduleContainer.appendChild(m.element)
                         } else {
                             let nextModuleData = g.modules[i + 1]
                             let nextModuleElement = nextModuleData.element
-                            container.insertBefore(m.element, nextModuleElement)
+                            moduleContainer.insertBefore(m.element, nextModuleElement)
                         }
                     }
+                    this.updateModuleElement(m)
                 }
-
-                this.updateModuleElement(m)
             }
         }
     }
