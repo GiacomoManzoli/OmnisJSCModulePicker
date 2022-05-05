@@ -1,5 +1,15 @@
 import "./style.css"
 
+function partition<T>(ary: T[], condition: (val: T) => boolean): T[][] {
+    return ary.reduce(
+        (acc, e) => {
+            acc[condition(e) ? 0 : 1].push(e)
+            return acc
+        },
+        [[], []] as T[][]
+    )
+}
+
 export class Module {
     id: number = 0
     group: string
@@ -60,6 +70,8 @@ export class ModulePicker {
     public groupHorzScroll: boolean = false
     public showGroups: boolean = true
 
+    private garbageElements: HTMLElement[] = []
+
     constructor(container: HTMLElement) {
         this.container = container
         this.container.innerHTML = ""
@@ -105,6 +117,12 @@ export class ModulePicker {
                 this.rendered.set(groupName, moduleGroup)
             }
         })
+
+        this.rendered.forEach((group) => {
+            let [modules, modulesToDelete] = partition(group.modules, (m) => m.element == null)
+            group.modules = modules
+            this.garbageElements.push(...modulesToDelete.map((m) => m.element))
+        })
     }
 
     setFilter(filter: string) {
@@ -118,6 +136,8 @@ export class ModulePicker {
         let currData = this.rendered
         let filter = this.filter.toLocaleLowerCase()
 
+        console.log("FILTER ", filter)
+
         currData.forEach((group) => {
             group.visible = false
             group.modules.forEach((m) => {
@@ -125,6 +145,9 @@ export class ModulePicker {
                     filter == "" ||
                     m.module.name.toLocaleLowerCase().includes(filter) ||
                     m.module.group.toLocaleLowerCase().includes(filter)
+
+                console.log(m)
+
                 group.visible = group.visible || m.visible // Group visible if at least one element in visible
             })
         })
@@ -179,6 +202,7 @@ export class ModulePicker {
         let listContainer = document.createElement("ul")
         listContainer.style.display = g.expanded ? "flex" : "none"
         listContainer.style.flex = "1"
+        listContainer.style.margin = "0"
         if (this.groupHorzScroll) {
             listContainer.style.flexWrap = "nowrap"
             listContainer.style.overflowX = "auto"
@@ -238,9 +262,9 @@ export class ModulePicker {
         } else {
             // Senza gruppi l'indentazione a sinistra non serve
             if (this.groupHorzScroll) {
-                item.style.margin = "0 16px 4px 0" // Se c'e' la scrollbar, il margine sotto puo' essere ridotto
+                item.style.margin = "0 8px 4px 0" // Se c'e' la scrollbar, il margine sotto puo' essere ridotto
             } else {
-                item.style.margin = "0 16px 16px 0"
+                item.style.margin = "0 8px 8px 0"
             }
         }
 
@@ -260,7 +284,7 @@ export class ModulePicker {
             item.style.borderRadius = `${this.boxBorderRadius}px`
         }
 
-        item.style.animation = "append-animate .3s linear"
+        // item.style.animation = "append-animate .3s linear"
 
         let text = document.createElement("span")
         text.innerText = m.module.name
@@ -291,6 +315,7 @@ export class ModulePicker {
     }
 
     private updateModuleElement(m: ModuleData) {
+        console.log("updateModuleElement", m, m.visible)
         m.element.style.display = m.visible ? "flex" : "none"
         let text = m.element.querySelector("span")
         text.innerText = m.module.name
@@ -329,10 +354,7 @@ export class ModulePicker {
 
             for (let i = g.modules.length - 1; i >= 0; i--) {
                 let m = g.modules[i]
-                if (m.element) {
-                    // Delete exsisting element
-                    moduleContainer.removeChild(m.element)
-                } else {
+                if (!m.element) {
                     // Create new element
                     m.element = this.createModuleElement(m)
                     if (moduleContainer) {
@@ -347,10 +369,19 @@ export class ModulePicker {
                             moduleContainer.insertBefore(m.element, nextModuleElement)
                         }
                     }
-                    this.updateModuleElement(m)
                 }
+
+                this.updateModuleElement(m)
             }
         }
+
+        this.garbageElements.forEach((e) => {
+            let parent = e.parentElement
+            if (parent) {
+                parent.removeChild(e)
+            }
+        })
+        this.garbageElements = []
     }
 
     private onModuleClick(event: MouseEvent, tabId: number, module: Module) {
