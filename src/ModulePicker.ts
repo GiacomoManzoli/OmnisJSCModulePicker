@@ -284,13 +284,23 @@ export class ModulePicker {
             item.style.borderRadius = `${this.boxBorderRadius}px`
         }
 
+        item.style.padding = "8px"
+        item.style.boxSizing = "border-box"
+
         // item.style.animation = "append-animate .3s linear"
+        // item.innerText = m.module.name
 
         let text = document.createElement("span")
         text.innerText = m.module.name
         text.style.flex = "1"
         text.style.overflow = "hidden"
-        text.style.textOverflow = "ellipsis"
+        // text.style.textOverflow = "ellipsis"
+        // text.style.whiteSpace = "nowrap"
+        text.style.display = "-webkit-box"
+        text.style.webkitLineClamp = "2"
+        text.style.webkitBoxOrient = "vertical"
+
+        text.style.hyphens = "auto"
 
         switch (this.boxTitleAlign) {
             case TextAlign.Left:
@@ -304,7 +314,7 @@ export class ModulePicker {
                 break
         }
 
-        text.style.padding = "8px"
+        // text.style.padding = "8px"
         item.appendChild(text)
 
         item.onclick = (e: MouseEvent) => {
