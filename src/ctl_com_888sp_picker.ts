@@ -20,6 +20,8 @@ var PROPERTIES = {
     showgroups: "$showgroups",
     boxtitlealign: "$boxtitlealign",
     grouphorzscroll: "$grouphorzscroll",
+    boxhotcolor: "$boxhotcolor",
+    boxhottextcolor: "$boxhottextcolor",
     // <OmnisUpdateMarker_PropertyConstants_End>
 }
 
@@ -31,6 +33,8 @@ var EVENTS = {
 export class ctrl_com_888sp_modulepicker extends ctrl_base {
     picker: ModulePicker
     autoUpdate: boolean = false
+
+    private renderOnPropsUpdate: boolean = true
 
     constructor() {
         super()
@@ -45,10 +49,12 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
 
         this.initModulePicker(client_elem)
 
+        this.renderOnPropsUpdate = false
         for (let propName in PROPERTIES) {
             const propValue = datapropsobj[propName] // L'oggetto è indicizzato per il nome senza $
             this.setProperty(PROPERTIES[propName], propValue)
         }
+        this.renderOnPropsUpdate = true
 
         this.update()
         return false
@@ -133,46 +139,68 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
                 // Main control
                 case PROPERTIES.backgroundcolor:
                     this.picker.backgroundColor = this.getTheme().getColorString(propValue)
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.fontsize:
                     this.picker.fontSize = propValue as number
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.titlefontsize:
                     this.picker.titleFontSize = propValue as number
+                    this.callRenderPropsUpdate()
                     return true
                 // BOX
                 case PROPERTIES.boxcolor:
                     this.picker.boxColor = this.getTheme().getColorString(propValue)
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.boxheight:
                     this.picker.boxHeight = propValue as number
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.boxwidth:
                     this.picker.boxWidth = propValue as number
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.boxtextcolor:
                     this.picker.boxTextColor = this.getTheme().getColorString(propValue)
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.boxhasshadow:
                     this.picker.boxHasShadow = propValue as boolean
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.boxborderwidth:
                     this.picker.boxBorderWidth = propValue as number
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.boxborderradius:
                     this.picker.boxBorderRadius = propValue as number
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.boxbordercolor:
                     this.picker.boxBorderColor = this.getTheme().getColorString(propValue)
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.boxtitlealign:
                     this.picker.boxTitleAlign = propValue as TextAlign
+                    this.callRenderPropsUpdate()
+                    return true
+                case PROPERTIES.boxhotcolor:
+                    this.picker.boxHotColor = this.getTheme().getColorString(propValue)
+                    this.callRenderPropsUpdate()
+                    return true
+                case PROPERTIES.boxhottextcolor:
+                    this.picker.boxHotTextColor = this.getTheme().getColorString(propValue)
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.showgroups:
                     this.picker.showGroups = propValue as boolean
+                    this.callRenderPropsUpdate()
                     return true
                 case PROPERTIES.grouphorzscroll:
                     this.picker.groupHorzScroll = propValue as boolean
+                    this.callRenderPropsUpdate()
                     return true
             }
         }
@@ -210,10 +238,19 @@ export class ctrl_com_888sp_modulepicker extends ctrl_base {
                 return this.picker.boxBorderColor
             case PROPERTIES.boxtitlealign:
                 return this.picker.boxTitleAlign
+            case PROPERTIES.boxhotcolor:
+                return this.picker.boxHotColor
+            case PROPERTIES.boxhottextcolor:
+                return this.picker.boxHotTextColor
             case PROPERTIES.grouphorzscroll:
                 return this.picker.groupHorzScroll
         }
         return super.getProperty(propNumber)
+    }
+
+    private callRenderPropsUpdate() {
+        // Aggiunto per evitare di fare dei re-render inutili
+        if (this.renderOnPropsUpdate) this.picker.render()
     }
 
     private initModulePicker(client_elem) {

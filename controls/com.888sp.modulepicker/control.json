@@ -12,6 +12,7 @@
         "uselegacycolors": false
     },
     "customtabname": "Picker",
+    "componentstoregroup": "",
     "standardproperties": ["dataname", "font"],
     "properties": {
         "filter": {
@@ -189,7 +190,6 @@
             "type": "boolean",
             "tab": "custom",
             "runtimeonly": false,
-            "findandreplace": false,
             "extconstant": false,
             "intconstant": false,
             "constrangestart": "",
@@ -203,7 +203,6 @@
             "type": "integer",
             "tab": "custom",
             "runtimeonly": false,
-            "findandreplace": false,
             "extconstant": false,
             "intconstant": true,
             "constrangestart": 170,
@@ -223,6 +222,34 @@
             "constrangestart": "",
             "constrangeend": "",
             "initial": 0,
+            "editreadonly": false
+        },
+        "boxhotcolor": {
+            "id": 17,
+            "desc": "Box background color on mouse over",
+            "type": "color",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": -2147483448,
+            "editreadonly": false
+        },
+        "boxhottextcolor": {
+            "id": 18,
+            "desc": "Box text color on mouse over",
+            "type": "color",
+            "tab": "custom",
+            "runtimeonly": false,
+            "findandreplace": false,
+            "extconstant": false,
+            "intconstant": false,
+            "constrangestart": "",
+            "constrangeend": "",
+            "initial": -2147483447,
             "editreadonly": false
         }
     },

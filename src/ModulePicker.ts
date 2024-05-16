@@ -67,6 +67,9 @@ export class ModulePicker {
     public boxBorderColor: string
     public boxTitleAlign: TextAlign = TextAlign.Center
 
+    public boxHotColor: string
+    public boxHotTextColor: string
+
     public groupHorzScroll: boolean = false
     public showGroups: boolean = true
 
@@ -136,8 +139,6 @@ export class ModulePicker {
         let currData = this.rendered
         let filter = this.filter.toLocaleLowerCase()
 
-        console.log("FILTER ", filter)
-
         currData.forEach((group) => {
             group.visible = false
             group.modules.forEach((m) => {
@@ -145,9 +146,6 @@ export class ModulePicker {
                     filter == "" ||
                     m.module.name.toLocaleLowerCase().includes(filter) ||
                     m.module.group.toLocaleLowerCase().includes(filter)
-
-                console.log(m)
-
                 group.visible = group.visible || m.visible // Group visible if at least one element in visible
             })
         })
@@ -243,6 +241,50 @@ export class ModulePicker {
 
     private createModuleElement(m: ModuleData) {
         let item = document.createElement("li")
+
+        let text = document.createElement("span")
+        text.innerText = m.module.name
+        text.style.flex = "1"
+        text.style.overflow = "hidden"
+        // text.style.textOverflow = "ellipsis"
+        // text.style.whiteSpace = "nowrap"
+        text.style.display = "-webkit-box"
+        text.style.webkitLineClamp = "2"
+        text.style.webkitBoxOrient = "vertical"
+        text.style.hyphens = "auto"
+
+        item.appendChild(text)
+
+        item.onclick = (e: MouseEvent) => {
+            this.onModuleClick(e, m.module.id, m.module)
+        }
+
+        item.onmouseover = () => {
+            item.style.backgroundColor = this.boxHotColor ?? this.boxColor
+            item.style.color = this.boxHotTextColor ?? this.boxTextColor
+        }
+
+        item.onmouseout = () => {
+            item.style.backgroundColor = this.boxColor
+            item.style.color = this.boxTextColor
+        }
+
+        return item
+    }
+
+    private updateModuleElement(m: ModuleData) {
+        let text = m.element.querySelector("span")
+        text.innerText = m.module.name
+        let ripple = m.element.getElementsByClassName("tab-ripple")[0]
+        if (ripple) {
+            ripple.remove()
+        }
+
+        this.applyStile(m)
+    }
+
+    private applyStile(m: ModuleData) {
+        let item = m.element
         item.style.cursor = "pointer"
         item.style.display = m.visible ? "flex" : "none"
         item.style.position = "relative"
@@ -290,18 +332,7 @@ export class ModulePicker {
         // item.style.animation = "append-animate .3s linear"
         // item.innerText = m.module.name
 
-        let text = document.createElement("span")
-        text.innerText = m.module.name
-        text.style.flex = "1"
-        text.style.overflow = "hidden"
-        // text.style.textOverflow = "ellipsis"
-        // text.style.whiteSpace = "nowrap"
-        text.style.display = "-webkit-box"
-        text.style.webkitLineClamp = "2"
-        text.style.webkitBoxOrient = "vertical"
-
-        text.style.hyphens = "auto"
-
+        let text = m.element.querySelector("span")
         switch (this.boxTitleAlign) {
             case TextAlign.Left:
                 text.style.textAlign = "left"
@@ -315,24 +346,6 @@ export class ModulePicker {
         }
 
         // text.style.padding = "8px"
-        item.appendChild(text)
-
-        item.onclick = (e: MouseEvent) => {
-            this.onModuleClick(e, m.module.id, m.module)
-        }
-
-        return item
-    }
-
-    private updateModuleElement(m: ModuleData) {
-        console.log("updateModuleElement", m, m.visible)
-        m.element.style.display = m.visible ? "flex" : "none"
-        let text = m.element.querySelector("span")
-        text.innerText = m.module.name
-        let ripple = m.element.getElementsByClassName("tab-ripple")[0]
-        if (ripple) {
-            ripple.remove()
-        }
     }
 
     render() {
