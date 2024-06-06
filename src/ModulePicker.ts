@@ -351,6 +351,8 @@ export class ModulePicker {
     render() {
         this.container.style.backgroundColor = this.backgroundColor
         this.container.style.whiteSpace = "initial"
+        this.container.style.overflowY = "auto"
+        this.container.style.overflowX = "hidden"
         let groupedData = this.applyFilter()
         let groupNames = Array.from(groupedData.keys())
 
