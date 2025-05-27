@@ -4,12 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "jest",
-        "test:dev": "npx jest --watch",
-        "docs": "npx typedoc",
-        "dev": "webpack --mode=development",
-        "build": "webpack --mode=production",
-        "watch": "webpack --watch --mode=development",
+        "dev": "webpack --config webpack.dev.js",
+        "build": "webpack --config webpack.prod.js",
+        "watch": "webpack --watch --config webpack.dev.js",
         "serve": "http-server -p 9001 -c1",
         "start": "npm run watch & npm run serve",
         "pretty": "npx prettier src/**/*.ts --write",
@@ -28,6 +25,7 @@
         "tsconfig-paths-webpack-plugin": "^4.2.0",
         "typescript": "^5.8.3",
         "webpack": "^5.99.9",
-        "webpack-cli": "^6.0.1"
+        "webpack-cli": "^6.0.1",
+        "webpack-merge": "^6.0.1"
     }
 }

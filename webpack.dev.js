@@ -50,7 +50,7 @@ module.exports = {
         // library: "qrcode_dev",
         libraryTarget: "window", // https://webpack.js.org/configuration/output/#outputlibrarytarget
     },
-    optimization: {
-        minimizer: [new TerserPlugin({ terserOptions: { safari10: true } })],
-    },
+    // optimization: {
+    //     minimizer: [new TerserPlugin({ terserOptions: { safari10: true } })],
+    // },
 }
