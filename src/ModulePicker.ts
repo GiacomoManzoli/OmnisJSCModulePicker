@@ -51,6 +51,8 @@ export class ModulePicker {
 
     private container: HTMLElement
     private rendered: Map<string, ModuleGroup> = new Map()
+    /** Groups names sorted by module insertion order  */
+    private orderedGroupnames: string[] = []
 
     public backgroundColor: string
     public fontSize: number
@@ -92,9 +94,15 @@ export class ModulePicker {
                 m.group = ""
             })
         }
+        this.orderedGroupnames = modules
+            .map((m) => m.group)
+            .filter((groupName, i, self) => self.indexOf(groupName) === i)
+
+        console.debug("setModules", modules)
 
         modules.forEach((v) => {
             let { group: groupName } = v
+
             if (this.rendered.has(groupName)) {
                 let group = this.rendered.get(groupName)
                 // Dumb update: all the modules are blindly added
@@ -121,10 +129,26 @@ export class ModulePicker {
             }
         })
 
+        // Removes all the unused modules from the groups
         this.rendered.forEach((group) => {
             let [modules, modulesToDelete] = partition(group.modules, (m) => m.element == null)
             group.modules = modules
             this.garbageElements.push(...modulesToDelete.map((m) => m.element))
+        })
+
+        // Removes all the unused groups
+        const allGroupNames = new Set(this.rendered.keys())
+        const currentGroupNames = new Set(modules.map((g) => g.group))
+        const difference = new Set([...allGroupNames].filter((x) => !currentGroupNames.has(x)))
+        console.debug("All groups", allGroupNames)
+        console.debug("Current", currentGroupNames)
+        console.debug("Delta", difference)
+        difference.forEach((groupName) => {
+            const g = this.rendered.get(groupName)
+            if (g.element) {
+                this.garbageElements.push(g.element)
+            }
+            this.rendered.delete(groupName)
         })
     }
 
@@ -349,12 +373,15 @@ export class ModulePicker {
     }
 
     render() {
+        console.debug("---- RENDER -----")
         this.container.style.backgroundColor = this.backgroundColor
         this.container.style.whiteSpace = "initial"
         this.container.style.overflowY = "auto"
         this.container.style.overflowX = "hidden"
         let groupedData = this.applyFilter()
-        let groupNames = Array.from(groupedData.keys())
+
+        let groupNames = this.orderedGroupnames //Array.from(groupedData.keys())
+        console.debug(groupedData, groupNames)
 
         for (let j = groupNames.length - 1; j >= 0; j--) {
             let g = groupedData.get(groupNames[j])
