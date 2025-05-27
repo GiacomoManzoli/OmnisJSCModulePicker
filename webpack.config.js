@@ -1,9 +1,12 @@
 const path = require("path")
 const TerserPlugin = require("terser-webpack-plugin")
-const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin")
+// const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin")
 
 module.exports = {
     // entry: "./src/index.ts",
+
+    mode: "development", // o "production"
+
     entry: {
         ctl_com_888sp_modulepicker: "./src/index.ts",
     },
@@ -23,10 +26,6 @@ module.exports = {
                 test: /\.css$/,
                 use: ["style-loader", "css-loader"],
             },
-            {
-                test: /\.json$/,
-                loader: "json-loader",
-            },
         ],
     },
     devtool: "source-map",
@@ -39,6 +38,11 @@ module.exports = {
         //     "@settings": path.resolve(__dirname, "./src/APP_CONFIG.ts"),
         //     "@errors": path.resolve(__dirname, "./src/errors.ts")
         // }
+        // fallback: {
+        //     crypto: false,
+        //     path: require.resolve("path-browserify"),
+        //     stream: require.resolve("stream-browserify"),
+        // },
     },
     output: {
         filename: "[name].bundle.js",
