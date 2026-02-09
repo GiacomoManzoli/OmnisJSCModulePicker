@@ -189,12 +189,26 @@ export class ModulePicker {
             title.style.cursor = "pointer"
             title.style.fontSize = `${this.titleFontSize}pt`
 
+            title.style.display = "flex"
+            title.style.alignItems = "center"
+
             let expandCollapse = document.createElement("span")
-            expandCollapse.innerText = "+"
+            expandCollapse.className = `module-chevron-icon ${g.expanded ? 'expanded' : 'collapsed'}`
             expandCollapse.style.display = "inline-block"
-            expandCollapse.style.width = `${this.titleFontSize + 1}pt`
-            expandCollapse.style.height = `${this.titleFontSize + 1}pt`
             expandCollapse.style.textAlign = "center"
+            expandCollapse.style.verticalAlign = "middle"
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+            svg.setAttribute("viewBox", "0 0 24 24")
+            svg.setAttribute("width", "100%")
+            svg.setAttribute("height", "100%")
+            
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path")
+            path.setAttribute("d", "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z")
+            path.setAttribute("fill", "currentColor")
+            
+            svg.appendChild(path)
+            expandCollapse.appendChild(svg)
 
             title.appendChild(expandCollapse)
 
@@ -211,7 +225,7 @@ export class ModulePicker {
                 if (ul) {
                     ul.style.display = g.expanded ? "flex" : "none"
 
-                    let lis = ul.getElementsByClassName("tab-ripple")
+                    let lis = ul.getElementsByClassName("module-tab-ripple")
                     for (let i = 0; i < lis.length; i++) {
                         lis.item(i).remove()
                     }
@@ -256,7 +270,14 @@ export class ModulePicker {
             let titleContent = Array.from(title.querySelectorAll("span"))
             let [expandCollapse, titleText] = titleContent
 
-            expandCollapse.innerText = g.expanded ? "-" : "+"
+            // Toggle chevron icon classes for animation
+            if (g.expanded) {
+                expandCollapse.classList.remove("collapsed")
+                expandCollapse.classList.add("expanded")
+            } else {
+                expandCollapse.classList.remove("expanded")
+                expandCollapse.classList.add("collapsed")
+            }
             titleText.innerText = g.group
         }
 
@@ -299,7 +320,7 @@ export class ModulePicker {
     private updateModuleElement(m: ModuleData) {
         let text = m.element.querySelector("span")
         text.innerText = m.module.name
-        let ripple = m.element.getElementsByClassName("tab-ripple")[0]
+        let ripple = m.element.getElementsByClassName("module-tab-ripple")[0]
         if (ripple) {
             ripple.remove()
         }
@@ -444,8 +465,8 @@ export class ModulePicker {
         circle.style.width = circle.style.height = `${diameter}px`
         circle.style.left = `${event.clientX - (button.offsetLeft + radius)}px`
         circle.style.top = `${event.clientY - (button.offsetTop + radius)}px`
-        circle.classList.add("tab-ripple")
-        const ripple = button.getElementsByClassName("tab-ripple")[0]
+        circle.classList.add("module-tab-ripple")
+        const ripple = button.getElementsByClassName("module-tab-ripple")[0]
         if (ripple) {
             ripple.remove()
         }
